@@ -15,16 +15,7 @@ import sys
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
-proxylist = {'http': 'http://127.0.0.1:8087'}
 
-conn = pymongo.Connection("127.0.0.1", 27017)
-# print conn.database_names()
-db = conn.AppChinaData  # 连接库
-# db.authenticate("jayvee", "hejiawei")
-# data = {'test': '12312312'}
-# print db.collection_names()
-appdb = db.AppInfo
-urldb = db.URLlist
 
 
 def crawlApp(url, category=''):
@@ -188,30 +179,43 @@ def crawlUrl(starturl, category):
 
 # result = crawlApp('http://www.appchina.com/app/com.datou.pnzxyxss.test')
 
-print urldb
-one = urldb.find_one()
-print one
-print type(one)
-while one is not None:
-    # print one['app_url']
-    appurl = 'http://www.appchina.com' + one['app_url']+'/'
-    category = one['app_category']
-    print '准备爬取：'+one['app_name']
-    appinfo = crawlApp(appurl, category)
-    appdb.insert(appinfo)
-    urldb.remove({'app_url': one['app_url']})
-    # 为下一轮获取url
-    one = urldb.find_one()
-    # jsonstr = json.dumps(result)
-    # print(type(jsonstr))
-    # print(jsonstr)
-    # f = open('./file', 'w+')
 
-    # f = codecs.open('./output', 'w', 'utf-8')
-    # f.write(jsonstr.encode('utf8'))
-    # for key in result:
-    # for aa in key:
-    # print aa, "::", key[aa]
-    # f.write(aa + "::" + key[aa] + '\n')
-    # print '=============='
-    # f.write("===================================\n")
+if __name__ == '__main__':
+
+    proxylist = {'http': 'http://127.0.0.1:8087'}
+
+    conn = pymongo.Connection("127.0.0.1", 27017)
+    # print conn.database_names()
+    db = conn.AppChinaData  # 连接库
+    # db.authenticate("jayvee", "hejiawei")
+    # data = {'test': '12312312'}
+    # print db.collection_names()
+    appdb = db.AppInfo
+    urldb = db.URLlist
+    print urldb
+    one = urldb.find_one()
+    print one
+    print type(one)
+    while one is not None:
+        # print one['app_url']
+        appurl = 'http://www.appchina.com' + one['app_url'] + '/'
+        category = one['app_category']
+        print '准备爬取：' + one['app_name']
+        appinfo = crawlApp(appurl, category)
+        appdb.insert(appinfo)
+        urldb.remove({'app_url': one['app_url']})
+        # 为下一轮获取url
+        one = urldb.find_one()
+        # jsonstr = json.dumps(result)
+        # print(type(jsonstr))
+        # print(jsonstr)
+        # f = open('./file', 'w+')
+
+        # f = codecs.open('./output', 'w', 'utf-8')
+        # f.write(jsonstr.encode('utf8'))
+        # for key in result:
+        # for aa in key:
+        # print aa, "::", key[aa]
+        # f.write(aa + "::" + key[aa] + '\n')
+        # print '=============='
+        # f.write("===================================\n")
